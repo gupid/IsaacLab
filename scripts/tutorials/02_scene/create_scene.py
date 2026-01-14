@@ -46,7 +46,7 @@ from isaaclab.utils import configclass
 ##
 from isaaclab_assets import CARTPOLE_CFG  # isort:skip
 
- 
+
 @configclass
 class CartpoleSceneCfg(InteractiveSceneCfg):
     """Configuration for a cart-pole scene."""

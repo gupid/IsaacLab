@@ -29,7 +29,7 @@ running the following command:
       .. code:: batch
 
          isaaclab.bat -p scripts\environments\list_envs.py --keyword <search_term>
- 
+
 
 We are actively working on adding more environments to the list. If you have any environments that
 you would like to add to Isaac Lab, please feel free to open a pull request!

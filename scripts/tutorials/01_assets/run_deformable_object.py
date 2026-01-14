@@ -88,7 +88,7 @@ def run_simulator(sim: sim_utils.SimulationContext, entities: dict[str, Deformab
 
     # Nodal kinematic targets of the deformable bodies
     nodal_kinematic_target = cube_object.data.nodal_kinematic_target.clone()
-   
+
     # Simulate physics
     while simulation_app.is_running():
         # reset
@@ -114,7 +114,6 @@ def run_simulator(sim: sim_utils.SimulationContext, entities: dict[str, Deformab
 
             # reset buffers
             cube_object.reset()
-            cube_object.data.nodal_vel_w
 
             print("----------------------------------------")
             print("[INFO]: Resetting object state...")

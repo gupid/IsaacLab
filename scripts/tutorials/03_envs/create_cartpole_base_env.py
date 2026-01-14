@@ -116,7 +116,7 @@ class EventCfg:
 @configclass
 class CartpoleEnvCfg(ManagerBasedEnvCfg):
     """Configuration for the cartpole environment."""
- 
+
     # Scene settings
     scene = CartpoleSceneCfg(num_envs=1024, env_spacing=2.5)
     # Basic settings

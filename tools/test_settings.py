@@ -69,4 +69,3 @@ TEST_RL_ENVS = [
     "Isaac-Velocity-Rough-G1-v0",
 ]
 """A list of RL environments to test training on by run_train_envs.py"""
- 
