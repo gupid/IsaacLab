@@ -172,7 +172,7 @@ def main():
     print("[INFO]: Setup complete...")
     # Run the simulator
     run_simulator(sim, scene)
-
+ 
 
 if __name__ == "__main__":
     main()

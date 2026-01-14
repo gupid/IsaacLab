@@ -14,7 +14,7 @@
 
 """Launch Isaac Sim Simulator first."""
 
-
+ 
 import argparse
 
 from isaaclab.app import AppLauncher

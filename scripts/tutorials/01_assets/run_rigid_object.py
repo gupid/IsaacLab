@@ -120,7 +120,7 @@ def run_simulator(sim: sim_utils.SimulationContext, entities: dict[str, RigidObj
         if count % 50 == 0:
             print(f"Root position (in world): {cone_object.data.root_pos_w}")
 
-
+ 
 def main():
     """Main function."""
     # Load kit helper
