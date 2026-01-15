@@ -11,8 +11,8 @@ from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 from isaaclab.utils import configclass
 from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 
-from isaaclab_tasks.manager_based.manipulation.lift import mdp
-from isaaclab_tasks.manager_based.manipulation.lift.lift_env_cfg import LiftEnvCfg
+from isaaclab_tasks.manager_based.manipulation.dual_lift import mdp
+from isaaclab_tasks.manager_based.manipulation.dual_lift.dual_lift_env_cfg import DualLiftEnvCfg
 
 ##
 # Pre-defined configs
@@ -22,7 +22,7 @@ from isaaclab_assets.robots.franka import FRANKA_PANDA_CFG  # isort: skip
 
 
 @configclass
-class FrankaCubeLiftEnvCfg(LiftEnvCfg):
+class FrankaCubeLiftEnvCfg(DualLiftEnvCfg):
     def __post_init__(self):
         # post init of parent
         super().__post_init__()

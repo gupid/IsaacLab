@@ -136,7 +136,7 @@ class RewardsCfg:
 
     pairwise_competition = RewTerm(
         func=mdp.pairwise_competition_reward,
-        params={"std": 0.3, "minimal_height": 0.04, "command_name": "object_pose", "adv_scale": 0.25},
+        params={"command_name": "object_pose", "threshold": 0.02, "debug_print": True, "debug_env_ids": [0, 1]},
         weight=1.0,
     )
 
@@ -166,7 +166,7 @@ class CurriculumCfg:
 
 
 @configclass
-class LiftEnvCfg(ManagerBasedRLEnvCfg):
+class DualLiftEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the lifting environment."""
 
     # Scene settings
