@@ -79,7 +79,7 @@ def object_goal_distance(
 def pairwise_competition_reward(
     env: ManagerBasedRLEnv,
     command_name: str,
-    threshold: float = 0.02,
+    threshold: float = 0.1,
     debug_print: bool = False,
     debug_env_ids: list[int] | None = None,
     robot_cfg: SceneEntityCfg = SceneEntityCfg("robot"),

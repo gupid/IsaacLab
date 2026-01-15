@@ -65,7 +65,7 @@ def object_reached_goal(
 def paired_object_reached_goal(
     env: ManagerBasedRLEnv,
     command_name: str = "object_pose",
-    threshold: float = 0.02,
+    threshold: float = 0.1,
     robot_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
     object_cfg: SceneEntityCfg = SceneEntityCfg("object"),
 ) -> torch.Tensor:
