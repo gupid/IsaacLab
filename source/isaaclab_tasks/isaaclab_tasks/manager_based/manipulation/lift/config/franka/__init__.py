@@ -75,3 +75,47 @@ gym.register(
     },
     disable_env_checker=True,
 )
+
+##
+# Camera-based Joint Position Control
+##
+
+gym.register(
+    id="Isaac-Lift-Cube-Franka-RGB-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.camera_joint_pos_env_cfg:FrankaCubeLiftRGBCameraEnvCfg",
+        "rl_games_cfg_entry_point": f"{agents.__name__}:rl_games_camera_ppo_cfg.yaml",
+    },
+)
+
+gym.register(
+    id="Isaac-Lift-Cube-Franka-Depth-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.camera_joint_pos_env_cfg:FrankaCubeLiftDepthCameraEnvCfg",
+        "rl_games_cfg_entry_point": f"{agents.__name__}:rl_games_camera_ppo_cfg.yaml",
+    },
+)
+
+gym.register(
+    id="Isaac-Lift-Cube-Franka-RGB-ResNet18-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.camera_joint_pos_env_cfg:FrankaCubeLiftResNet18CameraEnvCfg",
+        "rl_games_cfg_entry_point": f"{agents.__name__}:rl_games_feature_ppo_cfg.yaml",
+    },
+)
+
+gym.register(
+    id="Isaac-Lift-Cube-Franka-RGB-TheiaTiny-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.camera_joint_pos_env_cfg:FrankaCubeLiftTheiaTinyCameraEnvCfg",
+        "rl_games_cfg_entry_point": f"{agents.__name__}:rl_games_feature_ppo_cfg.yaml",
+    },
+)
