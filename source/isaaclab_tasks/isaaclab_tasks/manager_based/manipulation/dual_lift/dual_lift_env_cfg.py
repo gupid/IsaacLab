@@ -136,8 +136,14 @@ class RewardsCfg:
 
     pairwise_competition = RewTerm(
         func=mdp.pairwise_competition_reward,
-        params={"command_name": "object_pose", "threshold": 0.1, "debug_print": False, "debug_env_ids": [0, 1]},
+        params={"command_name": "object_pose", "threshold": 0.02, "debug_print": False, "debug_env_ids": [0, 1]},
         weight=1.0,
+    )
+    # penalize object dropping
+    object_dropping = RewTerm(
+        func=mdp.root_height_below_minimum,
+        weight=-1.0,
+        params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("object")},
     )
 
 
@@ -153,7 +159,7 @@ class TerminationsCfg:
 
     pairwise_success = DoneTerm(
         func=mdp.paired_object_reached_goal,
-        params={"command_name": "object_pose", "threshold": 0.1},
+        params={"command_name": "object_pose", "threshold": 0.02},
     )
 
 

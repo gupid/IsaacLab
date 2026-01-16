@@ -79,13 +79,13 @@ def object_goal_distance(
 def pairwise_competition_reward(
     env: ManagerBasedRLEnv,
     command_name: str,
-    threshold: float = 0.1,
+    threshold: float = 0.02,
     debug_print: bool = False,
     debug_env_ids: list[int] | None = None,
     robot_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
     object_cfg: SceneEntityCfg = SceneEntityCfg("object"),
 ) -> torch.Tensor:
-    """Reward 1 only if this env finishes earlier than its paired opponent."""
+    """Reward winner by finish reason: success gets 1, timeout gets 1 if closer."""
     # extract the used quantities (to enable type-hinting)
     robot: RigidObject = env.scene[robot_cfg.name]
     object: RigidObject = env.scene[object_cfg.name]
@@ -97,7 +97,16 @@ def pairwise_competition_reward(
     distance = torch.norm(des_pos_w - object.data.root_pos_w[:, :3], dim=1)
     reached = distance < threshold
     partner = _get_pair_indices(reached.shape[0], reached.device)
-    reward = (reached & ~reached[partner]).float()
+    reward = torch.zeros_like(distance)
+    # determine termination reasons for this step
+    time_out = env.termination_manager.get_term("time_out")
+    success = env.termination_manager.get_term("pairwise_success")
+    # success case: only the env that actually reached earlier gets reward
+    success_reward = (reached & ~reached[partner]).float()
+    reward = torch.where(success & ~time_out, success_reward, reward)
+    # timeout case: closer to its own target gets reward
+    closer = (distance < distance[partner]).float()
+    reward = torch.where(time_out, closer, reward)
 
     if debug_print:
         if debug_env_ids is None:
@@ -107,14 +116,14 @@ def pairwise_competition_reward(
         if last_step != step:
             hit = False
             for env_id in debug_env_ids:
-                if env_id < reached.shape[0] and bool(reached[env_id].item()):
+                if env_id < reward.shape[0] and float(reward[env_id].item()) > 0.0:
                     hit = True
                     break
             if hit:
                 setattr(env, "_pair_debug_last_step", step)
                 parts = []
                 for env_id in debug_env_ids:
-                    if env_id >= reached.shape[0]:
+                    if env_id >= reward.shape[0]:
                         continue
                     opp_id = int(partner[env_id].item())
                     parts.append(
