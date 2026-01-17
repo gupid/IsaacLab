@@ -168,7 +168,7 @@ class RewardsCfg:
     # penalize object dropping
     object_dropping = RewTerm(
         func=mdp.root_height_below_minimum,
-        weight=0.0,
+        weight=-1.0,
         params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("object")},
     )
 
@@ -234,11 +234,6 @@ class CurriculumCfg:
     pairwise_competition = CurrTerm(
         func=mdp.modify_reward_weight, params={"term_name": "pairwise_competition", "weight": 1, "num_steps": 30000}
     )
-
-    object_dropping = CurrTerm(
-        func=mdp.modify_reward_weight, params={"term_name": "object_dropping", "weight": -1, "num_steps": 30000}
-    )
-
 
 ##
 # Environment configuration
