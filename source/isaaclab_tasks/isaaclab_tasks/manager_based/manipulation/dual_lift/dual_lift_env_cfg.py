@@ -8,6 +8,7 @@ from dataclasses import MISSING
 import isaaclab.sim as sim_utils
 from isaaclab.assets import ArticulationCfg, AssetBaseCfg, DeformableObjectCfg, RigidObjectCfg
 from isaaclab.envs import ManagerBasedRLEnvCfg
+from isaaclab.managers import CurriculumTermCfg as CurrTerm
 from isaaclab.managers import EventTermCfg as EventTerm
 from isaaclab.managers import ObservationGroupCfg as ObsGroup
 from isaaclab.managers import ObservationTermCfg as ObsTerm
@@ -134,15 +135,40 @@ class EventCfg:
 class RewardsCfg:
     """Reward terms for the MDP."""
 
+    reaching_object = RewTerm(func=mdp.object_ee_distance, params={"std": 0.1}, weight=1.0)
+
+    lifting_object = RewTerm(func=mdp.object_is_lifted, params={"minimal_height": 0.04}, weight=15.0)
+
+    object_goal_tracking = RewTerm(
+        func=mdp.object_goal_distance,
+        params={"std": 0.3, "minimal_height": 0.04, "command_name": "object_pose"},
+        weight=16.0,
+    )
+
+    object_goal_tracking_fine_grained = RewTerm(
+        func=mdp.object_goal_distance,
+        params={"std": 0.05, "minimal_height": 0.04, "command_name": "object_pose"},
+        weight=5.0,
+    )
+
+    # action penalty
+    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-1e-4)
+
+    joint_vel = RewTerm(
+        func=mdp.joint_vel_l2,
+        weight=-1e-4,
+        params={"asset_cfg": SceneEntityCfg("robot")},
+    )
+
     pairwise_competition = RewTerm(
         func=mdp.pairwise_competition_reward,
         params={"command_name": "object_pose", "threshold": 0.02, "debug_print": False, "debug_env_ids": [0, 1]},
-        weight=1.0,
+        weight=0.0,
     )
     # penalize object dropping
     object_dropping = RewTerm(
         func=mdp.root_height_below_minimum,
-        weight=-1.0,
+        weight=0.0,
         params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("object")},
     )
 
@@ -159,14 +185,59 @@ class TerminationsCfg:
 
     pairwise_success = DoneTerm(
         func=mdp.paired_object_reached_goal,
-        params={"command_name": "object_pose", "threshold": 0.02},
+        params={"command_name": "object_pose", "threshold": 0.02, "min_step_count": 30000},
     )
-
 
 @configclass
 class CurriculumCfg:
     """Curriculum terms for the MDP."""
-    pass
+    action_rate = CurrTerm(
+        func=mdp.modify_reward_weight_multi,
+        params={
+            "term_name": "action_rate",
+            "schedule": [
+                {"num_steps": 10000, "weight": -1e-1},
+                {"num_steps": 30000, "weight": 0},
+            ]
+        }
+    )
+
+    joint_vel = CurrTerm(
+        func=mdp.modify_reward_weight_multi,
+        params={
+            "term_name": "joint_vel",
+            "schedule": [
+                {"num_steps": 10000, "weight": -1e-1},
+                {"num_steps": 30000, "weight": 0},
+            ]
+        }
+    )
+
+    lifting_object = CurrTerm(
+        func=mdp.modify_reward_weight, params={"term_name": "lifting_object", "weight": 0, "num_steps": 30000}
+    )
+
+    object_goal_tracking = CurrTerm(
+        func=mdp.modify_reward_weight, params={"term_name": "object_goal_tracking", "weight": 0, "num_steps": 30000}
+    )
+
+    object_goal_tracking_fine_grained = CurrTerm(
+        func=mdp.modify_reward_weight, params={"term_name": "object_goal_tracking_fine_grained", "weight": 0, "num_steps": 30000}
+    )
+
+    reaching_object = CurrTerm(
+        func=mdp.modify_reward_weight, params={"term_name": "reaching_object", "weight": 0, "num_steps": 30000}
+    )
+
+    """self play"""
+
+    pairwise_competition = CurrTerm(
+        func=mdp.modify_reward_weight, params={"term_name": "pairwise_competition", "weight": 1, "num_steps": 30000}
+    )
+
+    object_dropping = CurrTerm(
+        func=mdp.modify_reward_weight, params={"term_name": "object_dropping", "weight": -1, "num_steps": 30000}
+    )
 
 
 ##

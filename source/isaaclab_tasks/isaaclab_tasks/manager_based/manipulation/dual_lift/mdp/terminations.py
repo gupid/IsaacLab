@@ -68,8 +68,13 @@ def paired_object_reached_goal(
     threshold: float = 0.02,
     robot_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
     object_cfg: SceneEntityCfg = SceneEntityCfg("object"),
+    min_step_count: int = 30000,
 ) -> torch.Tensor:
     """Terminate both envs in a pair when either reaches the goal."""
+    # Check if we've reached the minimum step count to enable this termination
+    if env.common_step_counter < min_step_count:
+        return torch.zeros(env.scene.num_envs, dtype=torch.bool, device=env.device)
+    
     reached = object_reached_goal(
         env,
         command_name=command_name,
