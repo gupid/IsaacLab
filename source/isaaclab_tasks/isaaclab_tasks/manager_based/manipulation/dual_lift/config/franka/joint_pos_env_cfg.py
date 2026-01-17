@@ -11,8 +11,8 @@ from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 from isaaclab.utils import configclass
 from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 
-from isaaclab_tasks.manager_based.manipulation.lift import mdp
-from isaaclab_tasks.manager_based.manipulation.lift.lift_env_cfg import LiftEnvCfg
+from isaaclab_tasks.manager_based.manipulation.dual_lift import mdp
+from isaaclab_tasks.manager_based.manipulation.dual_lift.dual_lift_env_cfg import DualLiftEnvCfg
 
 ##
 # Pre-defined configs
@@ -20,14 +20,13 @@ from isaaclab_tasks.manager_based.manipulation.lift.lift_env_cfg import LiftEnvC
 from isaaclab.markers.config import FRAME_MARKER_CFG  # isort: skip
 from isaaclab_assets.robots.franka import FRANKA_PANDA_CFG  # isort: skip
 
-#装饰器，将下面的配置类标记为“配置类”
+
 @configclass
-class FrankaCubeLiftEnvCfg(LiftEnvCfg):  #LiftEnvCfg：lift任务的通用默认配置
+class FrankaCubeLiftEnvCfg(DualLiftEnvCfg):
     def __post_init__(self):
         # post init of parent
-        super().__post_init__()  #基类默认设置
+        super().__post_init__()
 
-    #开始覆盖配置：机器人设置、动作空间、末端执行器、被操作物体、可视化/坐标系
         # Set Franka as robot
         self.scene.robot = FRANKA_PANDA_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
